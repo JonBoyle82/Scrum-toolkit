@@ -6,15 +6,16 @@
 <title>Complete Scrum Toolkit</title>
 <style>
 :root {
-  --primary:#667eea;--primary-dark:#5568d3;--secondary:#764ba2;--secondary-dark:#663d8f;
+  --primary:#4a9eff;--primary-dark:#2979ff;--secondary:#60a5fa;--secondary-dark:#3b82f6;
   --success:#2ecc71;--success-dark:#27ae60;--danger:#e74c3c;--danger-dark:#c0392b;
-  --bg-light:#f8f9fa;--bg-medium:#e9ecef;--border:#e0e0e0;
-  --text:#333;--text-muted:#666;--text-light:#999;
-  --radius:12px;--radius-sm:8px;--shadow:0 10px 40px rgba(0,0,0,.2);--shadow-sm:0 4px 12px rgba(0,0,0,.1);
+  --bg-light:#242424;--bg-medium:#2e2e2e;--border:#383838;
+  --text:#e0e0e0;--text-muted:#888;--text-light:#555;
+  --radius:12px;--radius-sm:8px;--shadow:0 10px 40px rgba(0,0,0,.6);--shadow-sm:0 4px 12px rgba(0,0,0,.4);
   --sidebar-w:220px;
+  --panel-bg:#1c1c1e;--card-bg:#242424;--input-bg:#2a2a2a;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,var(--primary),var(--secondary));min-height:100vh;padding:10px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0a0a0a;min-height:100vh;padding:10px;color:var(--text)}
 @media(min-width:769px){body{padding:16px 20px}}
 
 /* ── APP SHELL ── */
@@ -25,13 +26,13 @@ header h1{font-size:1.6em;margin-bottom:3px;text-shadow:2px 2px 4px rgba(0,0,0,.
 header p{font-size:.82em;opacity:.85}
 @media(min-width:769px){header h1{font-size:2.2em}header p{font-size:.95em}}
 
-#sprint-goal-banner{background:rgba(255,255,255,.15);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.3);border-radius:var(--radius);padding:8px 18px;color:#fff;text-align:center;margin-bottom:12px;font-size:.88em}
+#sprint-goal-banner{background:rgba(74,158,255,.12);backdrop-filter:blur(10px);border:1px solid rgba(74,158,255,.3);border-radius:var(--radius);padding:8px 18px;color:#e0e0e0;text-align:center;margin-bottom:12px;font-size:.88em}
 
 .app-shell{display:grid;grid-template-columns:var(--sidebar-w) 1fr;gap:14px;align-items:start}
 @media(max-width:768px){.app-shell{grid-template-columns:1fr}}
 
 /* ── SIDEBAR ── */
-.sidebar{background:rgba(255,255,255,.13);backdrop-filter:blur(12px);border-radius:var(--radius);padding:14px 10px;display:flex;flex-direction:column;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto}
+.sidebar{background:rgba(255,255,255,.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:14px 10px;display:flex;flex-direction:column;position:sticky;top:16px;max-height:calc(100vh - 32px);overflow-y:auto}
 @media(max-width:768px){
   .sidebar{position:fixed;top:0;left:-260px;width:240px;height:100vh;z-index:200;border-radius:0;transition:left .28s ease;padding-top:16px;max-height:100vh}
   .sidebar.open{left:0}
@@ -56,7 +57,7 @@ header p{font-size:.82em;opacity:.85}
 .sidebar-footer{margin-top:auto;font-size:.68em;color:rgba(255,255,255,.38);padding:10px 8px 2px;border-top:1px solid rgba(255,255,255,.12);margin-top:12px}
 
 /* ── HAMBURGER ── */
-#hamburger{display:none;position:fixed;top:12px;left:12px;z-index:300;background:rgba(255,255,255,.22);backdrop-filter:blur(10px);border:none;border-radius:8px;padding:7px 10px;color:#fff;font-size:1.1em;cursor:pointer;line-height:1}
+#hamburger{display:none;position:fixed;top:12px;left:12px;z-index:300;background:rgba(74,158,255,.18);backdrop-filter:blur(10px);border:1px solid rgba(74,158,255,.3);border-radius:8px;padding:7px 10px;color:#e0e0e0;font-size:1.1em;cursor:pointer;line-height:1}
 @media(max-width:768px){#hamburger{display:block}}
 #sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.38);z-index:150}
 #sidebar-overlay.visible{display:block}
@@ -65,7 +66,7 @@ header p{font-size:.82em;opacity:.85}
 .main-area{min-width:0}
 
 /* ── TAB PANELS ── */
-.tab-panel{display:none;background:#fff;border-radius:15px;padding:20px;box-shadow:var(--shadow);min-height:500px}
+.tab-panel{display:none;background:var(--panel-bg);border-radius:15px;padding:20px;box-shadow:var(--shadow);min-height:500px;border:1px solid var(--border)}
 .tab-panel.active{display:block;animation:fadeIn .22s ease}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 @media(min-width:769px){.tab-panel{padding:26px}}
@@ -97,7 +98,7 @@ h3{color:var(--secondary);margin-bottom:10px;font-size:1.15em}
 h4{color:var(--text);margin-bottom:7px;font-size:.98em}
 .form-group{margin-bottom:14px}
 .form-group label{display:block;font-weight:600;color:var(--text);margin-bottom:5px;font-size:.88em}
-input[type=text],input[type=number],input[type=date],input[type=password],select,textarea{width:100%;padding:9px 11px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;transition:border-color .2s;background:#fff;color:var(--text)}
+input[type=text],input[type=number],input[type=date],input[type=password],select,textarea{width:100%;padding:9px 11px;border:2px solid var(--border);border-radius:var(--radius-sm);font-size:14px;font-family:inherit;transition:border-color .2s;background:var(--input-bg);color:var(--text)}
 input:focus,select:focus,textarea:focus{outline:none;border-color:var(--primary)}
 textarea{resize:vertical;min-height:76px}
 .btn{padding:9px 16px;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
@@ -109,7 +110,7 @@ textarea{resize:vertical;min-height:76px}
 .btn-danger{background:var(--danger);color:#fff}.btn-danger:hover:not(:disabled){background:var(--danger-dark)}
 .btn-outline{background:transparent;border:2px solid var(--primary);color:var(--primary)}.btn-outline:hover:not(:disabled){background:var(--primary);color:#fff}
 .btn-sm{padding:5px 10px;font-size:12px}
-.card{background:var(--bg-light);border-radius:var(--radius);padding:14px;margin-bottom:10px}
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px}
 .card-gradient{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-radius:var(--radius);padding:18px;text-align:center}
 .card-gradient .value{font-size:1.9em;font-weight:700}.card-gradient .label{font-size:.8em;opacity:.9;margin-top:3px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -119,7 +120,7 @@ textarea{resize:vertical;min-height:76px}
 @media(max-width:480px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
 .flex-gap{display:flex;gap:8px}.flex-between{display:flex;justify-content:space-between;align-items:center}.flex-wrap{display:flex;flex-wrap:wrap;gap:8px}.align-center{align-items:center}
 .badge{display:inline-block;padding:2px 9px;border-radius:12px;font-size:.78em;font-weight:600}
-.badge-high{background:#fee;color:#c00}.badge-medium{background:#fef3cd;color:#856404}.badge-low{background:#d1ecf1;color:#0c5460}.badge-primary{background:#e8eaff;color:var(--primary)}
+.badge-high{background:#fee;color:#c00}.badge-medium{background:#fef3cd;color:#856404}.badge-low{background:#d1ecf1;color:#0c5460}.badge-primary{background:rgba(74,158,255,.15);color:var(--primary)}
 .section{margin-bottom:24px}
 .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:7px;border-bottom:2px solid var(--bg-medium)}
 .empty-state{text-align:center;padding:28px;color:var(--text-light);font-style:italic}
@@ -127,52 +128,52 @@ textarea{resize:vertical;min-height:76px}
 .input-row input,.input-row select{flex:1;min-width:0}
 .progress-bar{width:100%;height:18px;background:var(--bg-medium);border-radius:9px;overflow:hidden}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--success),var(--success-dark));border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;transition:width .3s;min-width:28px}
-.info-box{background:#e8eaff;border-left:4px solid var(--primary);padding:9px 12px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:14px;font-size:.88em;color:var(--primary)}
+.info-box{background:rgba(74,158,255,.08);border-left:4px solid var(--primary);padding:9px 12px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin-bottom:14px;font-size:.88em;color:var(--primary)}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 @media(max-width:900px){.two-col{grid-template-columns:1fr}}
-#hub-goal-display{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:18px;border-radius:var(--radius);margin-bottom:18px;text-align:center}
+#hub-goal-display{background:linear-gradient(135deg,rgba(74,158,255,.2),rgba(96,165,250,.15));border:1px solid rgba(74,158,255,.3);color:var(--text);padding:18px;border-radius:var(--radius);margin-bottom:18px;text-align:center}
 #hub-goal-display .gl{font-size:.8em;opacity:.85;margin-bottom:3px}
 #hub-goal-display .gt{font-size:1.25em;font-weight:700}
-.backlog-item{background:var(--bg-light);border-left:4px solid var(--primary);padding:11px 14px;margin-bottom:9px;border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.backlog-item{background:var(--card-bg);border-left:4px solid var(--primary);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:11px 14px;margin-bottom:9px;border-radius:0 var(--radius-sm) var(--radius-sm) 0}
 .backlog-item .item-header{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
 .subtask-list{padding-left:14px;margin-top:6px}
 .subtask-item{display:flex;align-items:center;gap:7px;padding:3px 0;font-size:.88em}
 .subtask-item.done span{text-decoration:line-through;color:var(--text-muted)}
-.member-card{background:var(--bg-light);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.member-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:12px}
 .member-card .member-name{font-weight:700;font-size:1em;color:var(--primary);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
 .member-card .q-label{font-weight:600;font-size:.8em;color:var(--text-muted);margin-bottom:3px}
-.impediment-item{background:var(--bg-light);border-left:4px solid var(--danger);padding:10px 14px;margin-bottom:9px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.impediment-item{background:var(--card-bg);border-left:4px solid var(--danger);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 14px;margin-bottom:9px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .timer-display{font-size:3.8em;font-weight:700;font-family:'Courier New',monospace;color:var(--primary);margin:10px 0;text-align:center}
 .timer-display.urgent{color:var(--danger)}
 .preset-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin-bottom:18px}
-.preset-card{background:var(--bg-light);border:2px solid var(--border);border-radius:var(--radius-sm);padding:12px;cursor:pointer;transition:all .2s;text-align:center}
-.preset-card:hover,.preset-card.active-preset{border-color:var(--primary);background:#e8eaff}
+.preset-card{background:var(--card-bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:12px;cursor:pointer;transition:all .2s;text-align:center}
+.preset-card:hover,.preset-card.active-preset{border-color:var(--primary);background:rgba(74,158,255,.1)}
 .preset-card .pc-name{font-weight:600;font-size:.86em;margin-bottom:3px}
 .preset-card .pc-time{color:var(--primary);font-weight:700;font-size:1.05em}
-.poker-card{aspect-ratio:2/3;background:#fff;border:3px solid var(--primary);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:1.7em;font-weight:700;color:var(--primary);cursor:pointer;transition:all .25s;box-shadow:0 4px 10px rgba(0,0,0,.1);user-select:none}
+.poker-card{aspect-ratio:2/3;background:var(--card-bg);border:3px solid var(--primary);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:1.7em;font-weight:700;color:var(--primary);cursor:pointer;transition:all .25s;box-shadow:0 4px 10px rgba(0,0,0,.4);user-select:none}
 .poker-card:hover{transform:translateY(-8px) scale(1.05);border-color:var(--secondary);color:var(--secondary)}
 .poker-card.selected{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-color:var(--secondary);transform:translateY(-8px) scale(1.05)}
 .cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:10px;max-width:780px;margin:18px auto}
 .poker-backlog-list{display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto}
-.poker-backlog-btn{background:var(--bg-light);border:2px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;text-align:left;cursor:pointer;font-size:.85em;transition:all .18s;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.poker-backlog-btn:hover{border-color:var(--primary);background:#e8eaff}
-.poker-backlog-btn.active-story{border-color:var(--primary);background:#e8eaff;font-weight:600}
-.upload-area{border:3px dashed var(--primary);border-radius:var(--radius);padding:28px 18px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg-light);margin-bottom:14px}
+.poker-backlog-btn{background:var(--card-bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;text-align:left;cursor:pointer;font-size:.85em;transition:all .18s;display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--text)}
+.poker-backlog-btn:hover{border-color:var(--primary);background:rgba(74,158,255,.1)}
+.poker-backlog-btn.active-story{border-color:var(--primary);background:rgba(74,158,255,.1);font-weight:600}
+.upload-area{border:3px dashed var(--primary);border-radius:var(--radius);padding:28px 18px;text-align:center;cursor:pointer;transition:all .2s;background:var(--card-bg);margin-bottom:14px}
 .upload-area:hover,.upload-area.dragover{border-color:var(--secondary);background:var(--bg-medium)}
-.story-card{background:var(--bg-light);border-left:4px solid var(--primary);padding:14px;margin-bottom:11px;border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.story-card{background:var(--card-bg);border-left:4px solid var(--primary);border-top:1px solid var(--border);border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px;margin-bottom:11px;border-radius:0 var(--radius-sm) var(--radius-sm) 0}
 .spinner{border:4px solid #f3f3f3;border-top:4px solid var(--primary);border-radius:50%;width:38px;height:38px;animation:spin .8s linear infinite;margin:0 auto 14px}
 @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
 .ac-list{list-style:none;padding:0;margin-top:8px}
 .ac-list li{padding:5px 0;border-bottom:1px solid #f0f0f0;display:flex;gap:7px;font-size:.85em}
 .ac-list li:before{content:"✓";color:var(--success);font-weight:700;flex-shrink:0}
 .ac-list li:last-child{border-bottom:none}
-.api-key-section{background:#fffbeb;border:1px solid #f59e0b;border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:18px}
-.api-key-section>label{color:#92400e;font-weight:600;font-size:.88em;display:block;margin-bottom:6px}
+.api-key-section{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.35);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:18px}
+.api-key-section>label{color:#f59e0b;font-weight:600;font-size:.88em;display:block;margin-bottom:6px}
 .ref-table{width:100%;border-collapse:collapse;font-size:.86em}
-.ref-table th{background:var(--primary);color:#fff;padding:9px 11px;text-align:left}
-.ref-table td{padding:9px 11px;border-bottom:1px solid var(--border);vertical-align:top}
+.ref-table th{background:rgba(74,158,255,.2);color:var(--primary);padding:9px 11px;text-align:left;border-bottom:2px solid var(--primary)}
+.ref-table td{padding:9px 11px;border-bottom:1px solid var(--border);vertical-align:top;color:var(--text)}
 .ref-table tr:last-child td{border-bottom:none}
-.ref-table tr:nth-child(even) td{background:var(--bg-light)}
+.ref-table tr:nth-child(even) td{background:rgba(255,255,255,.03)}
 .value-chips{display:flex;flex-wrap:wrap;gap:9px;margin:10px 0}
 .value-chip{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:7px 16px;border-radius:20px;font-weight:600;font-size:.88em}
 .pillar-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:11px 0}
@@ -195,12 +196,12 @@ textarea{resize:vertical;min-height:76px}
 .skill-level-count .lbl{font-size:.76em}
 .retro-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 @media(max-width:768px){.retro-cols{grid-template-columns:1fr}}
-.retro-col{background:var(--bg-light);padding:14px;border-radius:var(--radius);border-top:4px solid}
+.retro-col{background:var(--card-bg);border:1px solid var(--border);padding:14px;border-radius:var(--radius);border-top:4px solid}
 .retro-col.went-well{border-top-color:var(--success)}.retro-col.to-improve{border-top-color:var(--danger)}.retro-col.actions{border-top-color:#3498db}
-.retro-item{background:#fff;padding:9px 11px;margin-bottom:7px;border-radius:var(--radius-sm);display:flex;justify-content:space-between;align-items:flex-start;gap:7px}
+.retro-item{background:var(--panel-bg);border:1px solid var(--border);padding:9px 11px;margin-bottom:7px;border-radius:var(--radius-sm);display:flex;justify-content:space-between;align-items:flex-start;gap:7px}
 .retro-item .item-text{flex:1;font-size:.87em}
 .attendee-list{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
-.attendee-chip{background:var(--bg-medium);padding:5px 13px;border-radius:16px;font-size:.85em;display:flex;align-items:center;gap:5px}
+.attendee-chip{background:var(--bg-medium);border:1px solid var(--border);padding:5px 13px;border-radius:16px;font-size:.85em;display:flex;align-items:center;gap:5px}
 .attendee-chip button{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:13px;padding:0;line-height:1}
 .scroll-x{overflow-x:auto}
 .w-full{width:100%}
@@ -208,6 +209,42 @@ textarea{resize:vertical;min-height:76px}
 .mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}
 .text-muted{color:var(--text-muted);font-size:.86em}
 .text-center{text-align:center}
+
+/* ── PRIORITY BOARD ── */
+.pri-guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pri-quadrant{border-radius:var(--radius-sm);padding:10px 12px;border:1px solid var(--border)}
+.q-do-first{background:rgba(46,204,113,.1);border-color:rgba(46,204,113,.3)}
+.q-plan{background:rgba(74,158,255,.1);border-color:rgba(74,158,255,.3)}
+.q-fill{background:rgba(255,255,255,.04);border-color:var(--border)}
+.q-avoid{background:rgba(231,76,60,.08);border-color:rgba(231,76,60,.25)}
+.pri-quadrant .q-label{font-weight:700;font-size:.88em;margin-bottom:2px}
+.pri-quadrant .q-sub{font-size:.75em;color:var(--text-muted);margin-bottom:4px}
+.pri-quadrant .q-desc{font-size:.78em;color:var(--text-muted)}
+.pri-matrix{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:768px){.pri-matrix{grid-template-columns:1fr}}
+.pri-matrix-col{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.pri-matrix-header{padding:10px 14px;font-weight:700;font-size:.88em;text-align:center}
+.impact-high{background:rgba(231,76,60,.15);color:#e74c3c}
+.impact-low{background:rgba(46,204,113,.1);color:var(--success)}
+.pri-matrix-sub-row{display:grid;grid-template-columns:1fr 1fr}
+.pri-effort-label{font-size:.72em;font-weight:600;color:var(--text-muted);padding:6px 10px 2px;border-top:1px solid var(--border)}
+.pri-cell{min-height:80px;padding:8px 10px;border-right:1px solid var(--border)}
+.pri-cell:last-child{border-right:none}
+.pri-item-card{background:var(--panel-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.pri-item-title{font-size:.83em;font-weight:600;flex:1}
+.pri-item-notes{font-size:.75em;color:var(--text-muted);margin-top:2px}
+.pri-rank-card{background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:8px;display:flex;align-items:center;gap:12px}
+.pri-rank-num{font-size:1.4em;font-weight:700;color:var(--primary);min-width:32px;text-align:center}
+.pri-rank-info{flex:1}
+.pri-rank-title{font-weight:600;font-size:.92em;margin-bottom:3px}
+.pri-rank-meta{font-size:.78em;color:var(--text-muted);display:flex;gap:10px}
+.pri-tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.75em;font-weight:600}
+.pri-tag-high-impact{background:rgba(231,76,60,.15);color:#e74c3c}
+.pri-tag-med-impact{background:rgba(245,158,11,.12);color:#f59e0b}
+.pri-tag-low-impact{background:rgba(46,204,113,.12);color:var(--success)}
+.pri-tag-low-effort{background:rgba(46,204,113,.12);color:var(--success)}
+.pri-tag-med-effort{background:rgba(245,158,11,.12);color:#f59e0b}
+.pri-tag-high-effort{background:rgba(231,76,60,.12);color:#e74c3c}
 
 /* ── QUIZ ── */
 .badge-display{text-align:center;padding:20px 10px}
@@ -233,18 +270,18 @@ textarea{resize:vertical;min-height:76px}
 .quiz-question{font-size:1.1em;font-weight:600;color:var(--text);margin-bottom:18px;line-height:1.5}
 .quiz-cat{font-size:.73em;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--primary);margin-bottom:8px}
 .quiz-options{display:flex;flex-direction:column;gap:9px}
-.quiz-option{padding:12px 16px;border:2px solid var(--border);border-radius:var(--radius-sm);background:#fff;text-align:left;cursor:pointer;font-size:.92em;transition:all .18s;font-family:inherit}
-.quiz-option:hover:not(:disabled){border-color:var(--primary);background:#e8eaff}
+.quiz-option{padding:12px 16px;border:2px solid var(--border);border-radius:var(--radius-sm);background:var(--card-bg);text-align:left;cursor:pointer;font-size:.92em;transition:all .18s;font-family:inherit;color:var(--text)}
+.quiz-option:hover:not(:disabled){border-color:var(--primary);background:rgba(74,158,255,.1)}
 .quiz-option.correct{border-color:var(--success);background:#d4edda;color:#155724;font-weight:600}
 .quiz-option.wrong{border-color:var(--danger);background:#fee;color:#c00}
 .quiz-option.reveal-correct{border-color:var(--success);background:#d4edda;color:#155724}
 .quiz-option:disabled{cursor:default}
-.quiz-explain{background:var(--bg-light);border-left:4px solid var(--primary);padding:10px 14px;border-radius:0 8px 8px 0;font-size:.85em;margin-top:12px;line-height:1.55}
+.quiz-explain{background:rgba(74,158,255,.08);border-left:4px solid var(--primary);padding:10px 14px;border-radius:0 8px 8px 0;font-size:.85em;margin-top:12px;line-height:1.55;color:var(--text)}
 .quiz-result-card{text-align:center;padding:24px}
 .quiz-result-score{font-size:3.5em;font-weight:700;color:var(--primary);line-height:1}
 .quiz-result-label{font-size:1.1em;font-weight:600;margin:8px 0 4px}
 .quiz-streak{display:flex;align-items:center;justify-content:center;gap:6px;font-size:.85em;color:var(--text-muted);margin-top:8px}
-.dash-badge-mini{display:flex;align-items:center;gap:10px;background:var(--bg-light);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:6px}
+.dash-badge-mini{display:flex;align-items:center;gap:10px;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:6px}
 .dash-badge-mini .mini-icon{font-size:1.8em;line-height:1}
 .dash-badge-mini .mini-info{flex:1}
 .dash-badge-mini .mini-name{font-weight:700;font-size:.9em}
@@ -294,6 +331,7 @@ textarea{resize:vertical;min-height:76px}
       <button class="tab-btn" data-tab="poker">🃏 Sprint Poker</button>
       <button class="tab-btn" data-tab="timer">⏱️ Timer</button>
       <button class="tab-btn" data-tab="reference">📖 Reference</button>
+      <button class="tab-btn" data-tab="priority">⚡ Priority Board</button>
       <button class="tab-btn" data-tab="quiz">🧠 Quiz Me</button>
 
       <div class="sidebar-footer">2020 Scrum Guide &bull; All data local</div>
@@ -770,6 +808,93 @@ textarea{resize:vertical;min-height:76px}
         </div>
       </div>
 
+      <!-- PRIORITY BOARD -->
+      <div id="tab-priority" class="tab-panel">
+        <h2>⚡ Priority Board</h2>
+        <p class="text-muted mb-12">Rank tasks by Impact and Effort. Items from Sprint Planning are imported automatically — add standalone tasks here too.</p>
+
+        <div class="two-col" style="gap:14px;margin-bottom:18px">
+          <div>
+            <div class="section-header"><h3>➕ Add Task</h3></div>
+            <div class="form-group"><label>Task / Item</label><input type="text" id="pri-title" placeholder="What needs to be prioritised?"></div>
+            <div class="grid-2">
+              <div class="form-group"><label>Impact</label>
+                <select id="pri-impact">
+                  <option value="high">🔴 High</option>
+                  <option value="medium" selected>🟡 Medium</option>
+                  <option value="low">🟢 Low</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Effort</label>
+                <select id="pri-effort">
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group"><label>Notes (optional)</label><input type="text" id="pri-notes" placeholder="Any context..."></div>
+            <div class="flex-gap">
+              <button class="btn btn-primary" onclick="addPriorityItem()">Add Item</button>
+              <button class="btn btn-outline" onclick="importFromBacklog()">📋 Import from Backlog</button>
+            </div>
+          </div>
+          <div>
+            <div class="section-header"><h3>📖 Priority Guide</h3></div>
+            <div class="pri-guide-grid">
+              <div class="pri-quadrant q-do-first"><div class="q-label">⚡ Do First</div><div class="q-sub">High Impact · Low Effort</div><div class="q-desc">Quick wins — do these immediately</div></div>
+              <div class="pri-quadrant q-plan"><div class="q-label">🗓 Plan</div><div class="q-sub">High Impact · High Effort</div><div class="q-desc">Major projects — schedule and resource properly</div></div>
+              <div class="pri-quadrant q-fill"><div class="q-label">🔽 Fill In</div><div class="q-sub">Low Impact · Low Effort</div><div class="q-desc">Nice to have — do when capacity allows</div></div>
+              <div class="pri-quadrant q-avoid"><div class="q-label">🚫 Avoid</div><div class="q-sub">Low Impact · High Effort</div><div class="q-desc">Thankless tasks — challenge or defer these</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Matrix view -->
+        <div class="section">
+          <div class="section-header">
+            <h3>Impact / Effort Matrix</h3>
+            <div class="flex-gap">
+              <button class="btn btn-sm btn-outline" onclick="clearPriorityItems()" style="color:var(--danger);border-color:var(--danger)">🗑 Clear All</button>
+            </div>
+          </div>
+          <div class="pri-matrix">
+            <div class="pri-matrix-col">
+              <div class="pri-matrix-header impact-high">🔴 High Impact</div>
+              <div class="pri-matrix-sub-row">
+                <div>
+                  <div class="pri-effort-label">Low Effort → Do First ⚡</div>
+                  <div id="pri-high-low" class="pri-cell"></div>
+                </div>
+                <div>
+                  <div class="pri-effort-label">High Effort → Plan 🗓</div>
+                  <div id="pri-high-high" class="pri-cell"></div>
+                </div>
+              </div>
+            </div>
+            <div class="pri-matrix-col">
+              <div class="pri-matrix-header impact-low">🟢 Low Impact</div>
+              <div class="pri-matrix-sub-row">
+                <div>
+                  <div class="pri-effort-label">Low Effort → Fill In 🔽</div>
+                  <div id="pri-low-low" class="pri-cell"></div>
+                </div>
+                <div>
+                  <div class="pri-effort-label">High Effort → Avoid 🚫</div>
+                  <div id="pri-low-high" class="pri-cell"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ranked list -->
+        <div class="section mt-16">
+          <div class="section-header"><h3>📋 Ranked List</h3><span class="text-muted" id="pri-count-label"></span></div>
+          <div id="pri-ranked-list"></div>
+        </div>
+      </div>
+
       <!-- QUIZ ME -->
       <div id="tab-quiz" class="tab-panel">
         <h2>🧠 Quiz Me</h2>
@@ -838,6 +963,7 @@ function onTab(t){
   if(t==='timer'){renderTimerPresets();}
   if(t==='stories'){loadApiKeyStatus();}
   if(t==='reference'){renderSkills();renderSkillsSummary();}
+  if(t==='priority'){renderPriorityBoard();}
   if(t==='quiz'){renderQuizTab();}
 }
 
@@ -1473,6 +1599,101 @@ function saveSkill(key,level){const scores=ld(K.skills,{});scores[key]=level;sv(
 function renderSkillsSummary(){
   const scores=ld(K.skills,{});const vals=Object.values(scores);const c={Beginner:0,Intermediate:0,Advanced:0};vals.forEach(v=>{if(c[v]!==undefined)c[v]++;});
   document.getElementById('skills-summary').innerHTML=`<div class="skill-level-count beginner"><div class="count">${c.Beginner}</div><div class="lbl">Beginner</div></div><div class="skill-level-count intermediate"><div class="count">${c.Intermediate}</div><div class="lbl">Intermediate</div></div><div class="skill-level-count advanced"><div class="count">${c.Advanced}</div><div class="lbl">Advanced</div></div><div class="skill-level-count" style="background:var(--bg-light)"><div class="count">${SKILLS.length-vals.length}</div><div class="lbl">Not Rated</div></div>`;
+}
+
+// ── PRIORITY BOARD ──
+K.priority='scrum_priority';
+
+function getPriorityItems(){return ld(K.priority,[]);}
+
+// Score: High Impact=3/Med=2/Low=1, Low Effort=3/Med=2/High=1 → higher = do first
+function priScore(item){
+  const imp={high:3,medium:2,low:1}[item.impact]||1;
+  const eff={low:3,medium:2,high:1}[item.effort]||1;
+  return imp*10+eff;
+}
+
+function addPriorityItem(){
+  const title=document.getElementById('pri-title').value.trim();
+  if(!title)return;
+  const items=getPriorityItems();
+  items.push({id:Date.now(),title,impact:document.getElementById('pri-impact').value,effort:document.getElementById('pri-effort').value,notes:document.getElementById('pri-notes').value.trim(),source:'manual'});
+  sv(K.priority,items);
+  document.getElementById('pri-title').value='';document.getElementById('pri-notes').value='';
+  renderPriorityBoard();
+}
+
+function importFromBacklog(){
+  const existing=getPriorityItems();
+  const existingTitles=new Set(existing.map(i=>i.title));
+  const backlog=ld(K.planning,[]).filter(i=>!i.completed&&!existingTitles.has(i.title));
+  if(!backlog.length){alert('All backlog items are already on the Priority Board, or there are none.');return;}
+  const toAdd=backlog.map(i=>({id:Date.now()+Math.random(),title:i.title,impact:'medium',effort:i.points>=8?'high':i.points>=3?'medium':'low',notes:i.points?i.points+'pts':'',source:'backlog'}));
+  sv(K.priority,[...existing,...toAdd]);
+  renderPriorityBoard();
+  alert(`Imported ${toAdd.length} item${toAdd.length!==1?'s':''} from the Sprint Backlog.`);
+}
+
+function deletePriorityItem(id){
+  sv(K.priority,getPriorityItems().filter(i=>i.id!==id));
+  renderPriorityBoard();
+}
+
+function clearPriorityItems(){
+  if(!confirm('Clear all Priority Board items?'))return;
+  sv(K.priority,[]);renderPriorityBoard();
+}
+
+function renderPriorityBoard(){
+  const items=getPriorityItems();
+  const sorted=[...items].sort((a,b)=>priScore(b)-priScore(a));
+
+  // Matrix cells
+  const cells={'high-low':[],'high-high':[],'low-low':[],'low-high':[]};
+  items.forEach(i=>{
+    const effort=i.effort==='medium'?'high':i.effort; // medium effort → treat as mid; group med effort with high for simplicity
+    const key=`${i.impact==='high'?'high':'low'}-${i.effort==='low'?'low':'high'}`;
+    if(cells[key])cells[key].push(i);
+  });
+
+  ['high-low','high-high','low-low','low-high'].forEach(key=>{
+    const el=document.getElementById('pri-'+key.replace('-','-'));
+    if(!el)return;
+    el.innerHTML=cells[key].length
+      ?cells[key].map(i=>`<div class="pri-item-card"><div><div class="pri-item-title">${san(i.title)}</div>${i.notes?`<div class="pri-item-notes">${san(i.notes)}</div>`:''}</div><button onclick="deletePriorityItem(${i.id})" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;flex-shrink:0">✕</button></div>`).join('')
+      :'<p style="font-size:.78em;color:var(--text-light);padding:8px;text-align:center">None</p>';
+  });
+
+  // Ranked list
+  const rankEl=document.getElementById('pri-ranked-list');
+  const countEl=document.getElementById('pri-count-label');
+  if(countEl)countEl.textContent=items.length+' item'+(items.length!==1?'s':'');
+  if(!rankEl)return;
+  if(!sorted.length){rankEl.innerHTML='<p class="empty-state">No items yet. Add tasks above or import from the Sprint Backlog.</p>';return;}
+
+  const impLabel={high:'🔴 High',medium:'🟡 Medium',low:'🟢 Low'};
+  const effLabel={low:'Low',medium:'Medium',high:'High'};
+  const quadrant=(imp,eff)=>{
+    if(imp==='high'&&eff==='low')return'⚡ Do First';
+    if(imp==='high'&&eff!=='low')return'🗓 Plan';
+    if(imp!=='high'&&eff==='low')return'🔽 Fill In';
+    return'🚫 Avoid';
+  };
+
+  rankEl.innerHTML=sorted.map((item,idx)=>`
+    <div class="pri-rank-card">
+      <div class="pri-rank-num">${idx+1}</div>
+      <div class="pri-rank-info">
+        <div class="pri-rank-title">${san(item.title)}${item.source==='backlog'?'<span style="font-size:.72em;color:var(--text-muted);margin-left:6px">from backlog</span>':''}</div>
+        ${item.notes?`<div class="pri-item-notes">${san(item.notes)}</div>`:''}
+        <div class="pri-rank-meta">
+          <span class="pri-tag pri-tag-${item.impact}-impact">Impact: ${impLabel[item.impact]||item.impact}</span>
+          <span class="pri-tag pri-tag-${item.effort}-effort">Effort: ${effLabel[item.effort]||item.effort}</span>
+          <span style="color:var(--text-muted)">${quadrant(item.impact,item.effort)}</span>
+        </div>
+      </div>
+      <button onclick="deletePriorityItem(${item.id})" class="btn btn-sm btn-danger">✕</button>
+    </div>`).join('');
 }
 
 // ── QUIZ ──
