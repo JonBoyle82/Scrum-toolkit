@@ -152,7 +152,11 @@ textarea{resize:vertical;min-height:76px}
 .poker-card{aspect-ratio:2/3;background:#fff;border:3px solid var(--primary);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:1.7em;font-weight:700;color:var(--primary);cursor:pointer;transition:all .25s;box-shadow:0 4px 10px rgba(0,0,0,.1);user-select:none}
 .poker-card:hover{transform:translateY(-8px) scale(1.05);border-color:var(--secondary);color:var(--secondary)}
 .poker-card.selected{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;border-color:var(--secondary);transform:translateY(-8px) scale(1.05)}
-.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(75px,1fr));gap:10px;max-width:680px;margin:18px auto}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:10px;max-width:780px;margin:18px auto}
+.poker-backlog-list{display:flex;flex-direction:column;gap:6px;max-height:180px;overflow-y:auto}
+.poker-backlog-btn{background:var(--bg-light);border:2px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;text-align:left;cursor:pointer;font-size:.85em;transition:all .18s;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.poker-backlog-btn:hover{border-color:var(--primary);background:#e8eaff}
+.poker-backlog-btn.active-story{border-color:var(--primary);background:#e8eaff;font-weight:600}
 .upload-area{border:3px dashed var(--primary);border-radius:var(--radius);padding:28px 18px;text-align:center;cursor:pointer;transition:all .2s;background:var(--bg-light);margin-bottom:14px}
 .upload-area:hover,.upload-area.dragover{border-color:var(--secondary);background:var(--bg-medium)}
 .story-card{background:var(--bg-light);border-left:4px solid var(--primary);padding:14px;margin-bottom:11px;border-radius:0 var(--radius-sm) var(--radius-sm) 0}
@@ -564,27 +568,74 @@ textarea{resize:vertical;min-height:76px}
       <!-- SPRINT POKER -->
       <div id="tab-poker" class="tab-panel">
         <h2>Sprint Poker</h2>
-        <div class="input-row" style="max-width:580px;margin:0 auto 14px">
-          <input type="text" id="poker-story-input" placeholder="Enter user story or task to estimate...">
-          <button class="btn btn-primary" onclick="setPokerStory()">Set Story</button>
+
+        <div class="two-col" style="gap:14px;margin-bottom:14px">
+          <!-- Backlog picker -->
+          <div>
+            <div class="section-header"><h3>📋 Pick from Backlog</h3></div>
+            <div id="poker-backlog-list" class="poker-backlog-list"></div>
+          </div>
+          <!-- Manual entry -->
+          <div>
+            <div class="section-header"><h3>✏️ Or Enter Manually</h3></div>
+            <div class="input-row">
+              <input type="text" id="poker-story-input" placeholder="Enter user story or task...">
+              <button class="btn btn-primary" onclick="setPokerStory()">Set</button>
+            </div>
+          </div>
         </div>
+
         <div id="current-story-display" style="background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;padding:18px;border-radius:var(--radius);text-align:center;font-size:1.15em;font-weight:600;margin-bottom:14px;min-height:56px;display:flex;align-items:center;justify-content:center">
-          Enter a user story to begin voting
+          Select a backlog item or enter a story above
         </div>
+
         <div class="cards-grid" id="poker-cards"></div>
+
         <div class="text-center mb-12">
           <div class="flex-wrap" style="justify-content:center">
             <button class="btn btn-secondary" onclick="revealVotes()">👁 Reveal Votes</button>
             <button class="btn btn-danger" onclick="resetPoker()">🔄 Reset</button>
           </div>
         </div>
+
         <div id="poker-results" style="display:none">
           <div class="section-header"><h3>Voting Results</h3></div>
           <div id="votes-display" class="flex-wrap mb-12" style="justify-content:center"></div>
-          <div class="grid-3">
+          <div class="grid-3 mb-12">
             <div class="card-gradient"><div class="value" id="poker-avg">—</div><div class="label">Average</div></div>
             <div class="card-gradient"><div class="value" id="poker-consensus">—</div><div class="label">Most Common</div></div>
             <div class="card-gradient"><div class="value" id="poker-total">0</div><div class="label">Total Votes</div></div>
+          </div>
+          <div id="poker-save-row" style="display:none;text-align:center">
+            <p class="text-muted mb-8">Save the consensus estimate back to the backlog item?</p>
+            <button class="btn btn-success" onclick="savePokerEstimate()">💾 Save Estimate to Backlog</button>
+          </div>
+        </div>
+
+        <!-- Fibonacci reference -->
+        <div class="section mt-16">
+          <div class="section-header">
+            <h3>📖 Fibonacci Reference</h3>
+            <button class="btn btn-sm btn-outline" onclick="toggleFibTable()">Toggle</button>
+          </div>
+          <div id="fib-table-wrap">
+            <p class="text-muted mb-12" style="font-size:.85em">We use the Fibonacci sequence for sprint points to estimate duration. Points represent effort, complexity, and uncertainty — not hours exactly.</p>
+            <div class="scroll-x">
+              <table class="ref-table">
+                <thead><tr><th>Points</th><th>Duration</th><th>Description</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>0</strong></td><td>0 mins</td><td>No effort required, or no business value delivered (e.g. a behavioural change from a stand-up).</td></tr>
+                  <tr><td><strong>1</strong></td><td>30 min – 1 hr</td><td><span style="color:var(--success);font-weight:600">Extra Small</span> — Developers understand the requirement fully and consider it an easy change.</td></tr>
+                  <tr><td><strong>2</strong></td><td>1 – 2 hrs</td><td><span style="color:var(--success);font-weight:600">Small</span> — A little thought and effort required, but the developer has done this before and is confident.</td></tr>
+                  <tr><td><strong>3</strong></td><td>2 – 4 hrs</td><td><span style="color:#856404;font-weight:600">Average</span> — Done this before, know what's needed, may have a few extra steps. No research needed.</td></tr>
+                  <tr><td><strong>5</strong></td><td>4 – 8 hrs</td><td><span style="color:#856404;font-weight:600">Large</span> — Complex or unfamiliar work. May need team assistance. Generally the largest item in a weekly sprint.</td></tr>
+                  <tr><td><strong>8</strong></td><td>8 – 16 hrs</td><td><span style="color:var(--danger);font-weight:600">Extra Large</span> — Will take time and research; a few assumptions that may add risk to completion.</td></tr>
+                  <tr><td><strong>13</strong></td><td>16 – 24 hrs</td><td><span style="color:var(--danger);font-weight:600">⚠️ Warning</span> — Complex with lots of unknowns. Needs to be managed carefully by leads.</td></tr>
+                  <tr><td><strong>21</strong></td><td>24 – 40 hrs</td><td><span style="color:var(--danger);font-weight:600">🚨 Hazard</span> — Too complex for a weekly sprint. Needs refinement by the dev lead; more risk, assumptions, and dependencies involved.</td></tr>
+                  <tr><td><strong>40</strong></td><td>40 – 80 hrs</td><td><span style="color:#900;font-weight:600">🔴 Danger</span> — Must be broken up. Not enough information to begin, plan, or complete this work.</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
@@ -709,7 +760,7 @@ function onTab(t){
   if(t==='daily'){renderMembers();renderImpediments();}
   if(t==='review'){renderReviewItems();renderAttendees();updateReviewTimebox();}
   if(t==='retro'){renderRetro();updateRetroTimebox();}
-  if(t==='poker'){renderPokerCards();}
+  if(t==='poker'){renderPokerCards();renderPokerBacklog();}
   if(t==='timer'){renderTimerPresets();}
   if(t==='stories'){loadApiKeyStatus();}
   if(t==='reference'){renderSkills();renderSkillsSummary();}
@@ -1150,20 +1201,87 @@ function exportRetro(fmt){
 function clearRetro(){if(!confirm('Clear all retrospective items?'))return;retroData={ww:[],ti:[],ai:[]};sv(K.retro,retroData);renderRetro();}
 
 // ── SPRINT POKER ──
-const POKER_VALS=['0','1','2','3','5','8','13','21','?','☕'];
-let pokerVotes=[],pokerSelected=null;
+const POKER_VALS=['0','1','2','3','5','8','13','21','40','?','☕'];
+let pokerVotes=[],pokerSelected=null,pokerActiveItemId=null;
 
 function renderPokerCards(){document.getElementById('poker-cards').innerHTML=POKER_VALS.map(v=>`<div class="poker-card ${pokerSelected===v?'selected':''}" onclick="selectPokerCard('${v}')">${v}</div>`).join('');}
-function setPokerStory(){const v=document.getElementById('poker-story-input').value.trim();if(!v)return;document.getElementById('current-story-display').textContent=v;document.getElementById('poker-story-input').value='';}
+
+function renderPokerBacklog(){
+  const el=document.getElementById('poker-backlog-list');if(!el)return;
+  const items=ld(K.planning,[]).filter(i=>!i.completed);
+  if(!items.length){el.innerHTML='<p class="empty-state" style="padding:10px">No open backlog items. Add items in Sprint Planning first.</p>';return;}
+  el.innerHTML=items.map(item=>`
+    <button class="poker-backlog-btn ${pokerActiveItemId===item.id?'active-story':''}" onclick="selectPokerBacklogItem(${item.id})">
+      <span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${san(item.title)}</span>
+      ${item.points?`<span class="badge badge-primary">${item.points}pts</span>`:'<span class="badge" style="background:var(--bg-medium);color:var(--text-muted)">—</span>'}
+    </button>`).join('');
+}
+
+function selectPokerBacklogItem(id){
+  const items=ld(K.planning,[]);
+  const item=items.find(i=>i.id===id);if(!item)return;
+  pokerActiveItemId=id;
+  document.getElementById('current-story-display').textContent=item.title;
+  renderPokerBacklog();
+  resetPoker(false);
+}
+
+function setPokerStory(){
+  const v=document.getElementById('poker-story-input').value.trim();if(!v)return;
+  pokerActiveItemId=null;
+  document.getElementById('current-story-display').textContent=v;
+  document.getElementById('poker-story-input').value='';
+  renderPokerBacklog();
+  resetPoker(false);
+}
+
 function selectPokerCard(value){pokerSelected=value;renderPokerCards();pokerVotes.push({voter:'Voter '+(pokerVotes.length+1),value});}
+
 function revealVotes(){
   if(!pokerVotes.length){alert('No votes yet. Select cards to vote.');return;}
   document.getElementById('votes-display').innerHTML=pokerVotes.map(v=>`<div style="background:var(--bg-light);padding:10px 18px;border-radius:8px;border:2px solid var(--border);text-align:center"><div style="font-size:.78em;color:var(--text-muted)">${san(v.voter)}</div><div style="font-size:1.5em;font-weight:700;color:var(--primary)">${san(v.value)}</div></div>`).join('');
   const nums=pokerVotes.filter(v=>!isNaN(v.value)).map(v=>parseFloat(v.value));
-  if(nums.length){document.getElementById('poker-avg').textContent=(nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(1);const counts={};pokerVotes.forEach(v=>counts[v.value]=(counts[v.value]||0)+1);document.getElementById('poker-consensus').textContent=Object.keys(counts).reduce((a,b)=>counts[a]>counts[b]?a:b);}
-  document.getElementById('poker-total').textContent=pokerVotes.length;document.getElementById('poker-results').style.display='block';
+  let consensus='—';
+  if(nums.length){
+    document.getElementById('poker-avg').textContent=(nums.reduce((a,b)=>a+b,0)/nums.length).toFixed(1);
+    const counts={};pokerVotes.forEach(v=>counts[v.value]=(counts[v.value]||0)+1);
+    consensus=Object.keys(counts).reduce((a,b)=>counts[a]>counts[b]?a:b);
+    document.getElementById('poker-consensus').textContent=consensus;
+  }
+  document.getElementById('poker-total').textContent=pokerVotes.length;
+  document.getElementById('poker-results').style.display='block';
+  // Show save button only if estimating a backlog item and consensus is a number
+  const saveRow=document.getElementById('poker-save-row');
+  saveRow.style.display=(pokerActiveItemId&&!isNaN(consensus))?'block':'none';
 }
-function resetPoker(){pokerVotes=[];pokerSelected=null;renderPokerCards();document.getElementById('poker-results').style.display='none';document.getElementById('current-story-display').textContent='Enter a user story to begin voting';}
+
+function savePokerEstimate(){
+  if(!pokerActiveItemId)return;
+  const counts={};pokerVotes.forEach(v=>counts[v.value]=(counts[v.value]||0)+1);
+  const consensus=Object.keys(counts).reduce((a,b)=>counts[a]>counts[b]?a:b);
+  const pts=parseInt(consensus);if(isNaN(pts))return;
+  const items=ld(K.planning,[]);
+  const item=items.find(i=>i.id===pokerActiveItemId);
+  if(!item)return;
+  item.points=pts;sv(K.planning,items);
+  planningItems=items;
+  renderPokerBacklog();
+  alert(`✅ Saved ${pts} pts to "${item.title}"`);
+}
+
+function resetPoker(full=true){
+  pokerVotes=[];pokerSelected=null;
+  renderPokerCards();
+  document.getElementById('poker-results').style.display='none';
+  document.getElementById('poker-save-row').style.display='none';
+  if(full){
+    pokerActiveItemId=null;
+    document.getElementById('current-story-display').textContent='Select a backlog item or enter a story above';
+    renderPokerBacklog();
+  }
+}
+
+function toggleFibTable(){const w=document.getElementById('fib-table-wrap');w.style.display=w.style.display==='none'?'block':'none';}
 
 // ── CEREMONY TIMER ──
 let mainTimerSecs=0,mainTimerRunning=false,mainTimerInterval=null,currentCeremony='';
