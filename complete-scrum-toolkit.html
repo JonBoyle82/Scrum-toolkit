@@ -319,6 +319,9 @@ textarea{resize:vertical;min-height:76px}
 
       <button class="tab-btn active" data-tab="home">🏠 Dashboard</button>
 
+      <div class="nav-section">Backlog</div>
+      <button class="tab-btn" data-tab="backlog">📦 Product Backlog</button>
+
       <div class="nav-section">Sprint Ceremonies</div>
       <button class="tab-btn" data-tab="hub">📊 Sprint Hub</button>
       <button class="tab-btn" data-tab="planning">📋 Planning</button>
@@ -349,6 +352,72 @@ textarea{resize:vertical;min-height:76px}
         <div id="dash-content"></div>
       </div>
 
+      <!-- PRODUCT BACKLOG -->
+      <div id="tab-backlog" class="tab-panel">
+        <h2>📦 Product Backlog</h2>
+        <div class="info-box">The Product Owner manages and prioritises all work here. Items marked <strong>Ready</strong> (have points + description) can be pulled into the current sprint.</div>
+
+        <!-- THEMES -->
+        <div class="section">
+          <div class="section-header">
+            <h3>🎯 Themes</h3>
+            <button class="btn btn-sm btn-outline" onclick="addTheme()">+ Add Theme</button>
+          </div>
+          <p class="text-muted mb-12" style="font-size:.84em">Strategic initiatives that group related Epics together.</p>
+          <div id="themes-list"></div>
+        </div>
+
+        <!-- EPICS -->
+        <div class="section">
+          <div class="section-header">
+            <h3>🗺️ Epics</h3>
+            <button class="btn btn-sm btn-outline" onclick="addEpic()">+ Add Epic</button>
+          </div>
+          <p class="text-muted mb-12" style="font-size:.84em">Large bodies of work under a Theme. Progress tracks linked stories.</p>
+          <div id="epics-list"></div>
+        </div>
+
+        <!-- BACKLOG ITEMS -->
+        <div class="section">
+          <div class="section-header">
+            <h3>📋 Backlog Items</h3>
+            <div class="flex-gap">
+              <select id="backlog-filter-epic" class="input-sm" onchange="renderProductBacklog()" style="max-width:180px">
+                <option value="">All Epics</option>
+              </select>
+              <button class="btn btn-sm btn-outline" onclick="showAddBacklogItemForm()">+ Add Item</button>
+            </div>
+          </div>
+          <div id="add-backlog-item-form" style="display:none;background:var(--card-bg);border-radius:var(--radius);padding:16px;margin-bottom:14px">
+            <div class="input-row mb-8">
+              <input type="text" id="pbi-title" placeholder="Story title...">
+              <input type="number" id="pbi-points" placeholder="Pts" style="max-width:72px" min="0">
+            </div>
+            <div class="input-row mb-8">
+              <textarea id="pbi-description" placeholder="Description / user story..." style="height:60px;resize:vertical;background:var(--input-bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:8px;width:100%"></textarea>
+            </div>
+            <div class="input-row mb-8">
+              <textarea id="pbi-acceptance" placeholder="Acceptance criteria..." style="height:60px;resize:vertical;background:var(--input-bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:8px;width:100%"></textarea>
+            </div>
+            <div class="input-row mb-8">
+              <select id="pbi-epic" style="background:var(--input-bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:8px">
+                <option value="">No Epic</option>
+              </select>
+              <select id="pbi-priority" style="background:var(--input-bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:8px">
+                <option value="medium">Medium Priority</option>
+                <option value="high">High Priority</option>
+                <option value="low">Low Priority</option>
+              </select>
+            </div>
+            <div class="flex-gap">
+              <button class="btn btn-primary" onclick="saveBacklogItem()">Save Item</button>
+              <button class="btn btn-outline" onclick="hideAddBacklogItemForm()">Cancel</button>
+            </div>
+          </div>
+          <div id="product-backlog-list"></div>
+        </div>
+      </div>
+
       <!-- SPRINT HUB -->
       <div id="tab-hub" class="tab-panel">
         <h2>Sprint Hub</h2>
@@ -368,6 +437,7 @@ textarea{resize:vertical;min-height:76px}
                 </select>
               </div>
             </div>
+            <div class="form-group"><label>Sprint Name</label><input type="text" id="sprint-name" placeholder="Sprint name (e.g. Phoenix)" oninput="saveSprintName()"></div>
             <div class="form-group"><label>Sprint Goal</label><input type="text" id="sprint-goal-input" placeholder="What is the purpose of this sprint?"></div>
             <div class="grid-2">
               <div class="form-group"><label>Start Date</label><input type="date" id="sprint-start"></div>
@@ -976,7 +1046,7 @@ textarea{resize:vertical;min-height:76px}
 </div><!-- /.container -->
 
 <script>
-const K={sprint:'scrum_sprint',planning:'scrum_planning',daily:'scrum_daily',review:'scrum_review',retro:'scrum_retro',skills:'scrum_skills',apiKey:'scrum_api_key',velocity:'scrum_velocity',members:'scrum_members',impediments:'scrum_impediments',attendees:'scrum_attendees',role:'scrum_role'};
+const K={sprint:'scrum_sprint',planning:'scrum_planning',daily:'scrum_daily',review:'scrum_review',retro:'scrum_retro',skills:'scrum_skills',apiKey:'scrum_api_key',velocity:'scrum_velocity',members:'scrum_members',impediments:'scrum_impediments',attendees:'scrum_attendees',role:'scrum_role',themes:'scrum_themes',epics:'scrum_epics',productBacklog:'scrum_product_backlog'};
 function ld(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
 function sv(k,v){localStorage.setItem(k,JSON.stringify(v))}
 function san(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
@@ -1010,6 +1080,7 @@ function onTab(t){
   if(t==='reference'){renderSkills();renderSkillsSummary();}
   if(t==='priority'){renderPriorityBoard();}
   if(t==='quiz'){renderQuizTab();}
+  if(t==='backlog'){renderProductBacklog();}
 }
 
 // ── ROLE ──
@@ -1099,11 +1170,29 @@ function renderDashboard(){
       </div>
       ${highPri.map(i=>`<div class="dash-backlog-item"><span>${san(i.title)}</span>${i.points?`<span class="badge badge-primary">${i.points}pts</span>`:''}</div>`).join('')}
     </div>`;
-    // Right: velocity
+    // Right: velocity + epic progress
     const velHtml=velocity.length
       ?velocity.slice(-4).map(s=>`<div class="dash-backlog-item"><span>Sprint ${s.number}</span><span class="badge badge-primary">${s.points}pts</span></div>`).join('')
       :'<p class="text-muted" style="font-size:.85em">No velocity data yet</p>';
-    rightCol=`<div class="dash-section"><h3>📈 Velocity History</h3>${velHtml}</div>`;
+    const poEpics=ld(K.epics,[]);
+    const pbItems=ld(K.productBacklog,[]);
+    let epicProgressHtml='';
+    if(poEpics.length){
+      const epicRows=poEpics.map(ep=>{
+        const total=pbItems.filter(i=>i.epicId===ep.id).length;
+        const done=pbItems.filter(i=>i.epicId===ep.id&&i.sprintPulled).length;
+        const pct=total?Math.round(done/total*100):0;
+        return `<div style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;font-size:.83em;margin-bottom:3px">
+            <span style="color:${ep.color}">${san(ep.name)}</span>
+            <span class="text-muted">${done}/${total} in sprint (${pct}%)</span>
+          </div>
+          <div class="progress-bar" style="height:6px"><div class="progress-fill" style="width:${pct}%;background:${ep.color}"></div></div>
+        </div>`;
+      }).join('');
+      epicProgressHtml=`<div class="dash-section"><h3>🗺️ Epic Progress</h3>${epicRows}</div>`;
+    }
+    rightCol=`<div class="dash-section"><h3>📈 Velocity History</h3>${velHtml}</div>${epicProgressHtml}`;
   }
 
   // Quick actions per role
@@ -1168,7 +1257,13 @@ function initHub(){
   document.getElementById('points-committed').value=SD.pointsCommitted;
   document.getElementById('update-points-done').value=SD.pointsDone;
   document.getElementById('update-stories-done').value=SD.storiesDone;
+  document.getElementById('sprint-name').value=SD.name||'';
   updateBanner();updateHubGoal();updateMetrics();
+}
+
+function saveSprintName(){
+  SD.name=document.getElementById('sprint-name').value.trim();
+  sv(K.sprint,SD);
 }
 
 function saveSprintContext(){
@@ -1279,22 +1374,28 @@ function addBacklogItem(){
 function renderBacklogList(){
   const el=document.getElementById('backlog-list');
   if(!planningItems.length){el.innerHTML='<p class="empty-state">No backlog items yet.</p>';return;}
-  el.innerHTML=planningItems.map(item=>`
+  const epics=ld(K.epics,[]);
+  el.innerHTML=planningItems.map(item=>{
+    const epic=epics.find(e=>e.id===item.epicId);
+    const epicBadge=epic?`<span class="badge" style="background:${epic.color}22;color:${epic.color};font-size:.75em">${san(epic.name)}</span>`:'';
+    return `
     <div class="backlog-item">
       <div class="item-header">
         <div style="display:flex;align-items:center;gap:7px;flex:1;min-width:0">
           <input type="checkbox" ${item.completed?'checked':''} onchange="toggleBI(${item.id})" style="cursor:pointer;flex-shrink:0">
           <span style="${item.completed?'text-decoration:line-through;color:var(--text-muted);':''}font-weight:600;font-size:.9em">${san(item.title)}</span>
           ${item.points?`<span class="badge badge-primary">${item.points}pts</span>`:''}
+          ${epicBadge}
           ${item.assignee?`<span class="text-muted">${san(item.assignee)}</span>`:''}
         </div>
         <div class="flex-gap">
           <button class="btn btn-sm btn-outline" onclick="selectBI(${item.id})">Tasks</button>
-          <button class="btn btn-sm btn-danger" onclick="deleteBI(${item.id})">✕</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteBI(${item.id})">&#10005;</button>
         </div>
       </div>
-      ${item.subtasks.length?`<div class="subtask-list">${item.subtasks.map(st=>`<div class="subtask-item ${st.done?'done':''}"><input type="checkbox" ${st.done?'checked':''} onchange="toggleST(${item.id},${st.id})" style="cursor:pointer"><span>${san(st.text)}</span></div>`).join('')}</div>`:''}
-    </div>`).join('');
+      ${item.subtasks&&item.subtasks.length?`<div class="subtask-list">${item.subtasks.map(st=>`<div class="subtask-item ${st.done?'done':''}"><input type="checkbox" ${st.done?'checked':''} onchange="toggleST(${item.id},${st.id})" style="cursor:pointer"><span>${san(st.text)}</span></div>`).join('')}</div>`:''}
+    </div>`;
+  }).join('');
 }
 
 function toggleBI(id){const i=planningItems.find(x=>x.id===id);if(i)i.completed=!i.completed;sv(K.planning,planningItems);renderBacklogList();}
@@ -1644,6 +1745,263 @@ function saveSkill(key,level){const scores=ld(K.skills,{});scores[key]=level;sv(
 function renderSkillsSummary(){
   const scores=ld(K.skills,{});const vals=Object.values(scores);const c={Beginner:0,Intermediate:0,Advanced:0};vals.forEach(v=>{if(c[v]!==undefined)c[v]++;});
   document.getElementById('skills-summary').innerHTML=`<div class="skill-level-count beginner"><div class="count">${c.Beginner}</div><div class="lbl">Beginner</div></div><div class="skill-level-count intermediate"><div class="count">${c.Intermediate}</div><div class="lbl">Intermediate</div></div><div class="skill-level-count advanced"><div class="count">${c.Advanced}</div><div class="lbl">Advanced</div></div><div class="skill-level-count" style="background:var(--bg-light)"><div class="count">${SKILLS.length-vals.length}</div><div class="lbl">Not Rated</div></div>`;
+}
+
+// ── PRODUCT BACKLOG ──
+let PB_themes=ld(K.themes,[]);
+let PB_epics=ld(K.epics,[]);
+let PB_items=ld(K.productBacklog,[]);
+let PB_editItemId=null;
+
+const THEME_COLORS=['#4a9eff','#60a5fa','#f59e0b','#10b981','#ef4444','#8b5cf6','#ec4899','#14b8a6'];
+
+function savePBThemes(){sv(K.themes,PB_themes);}
+function savePBEpics(){sv(K.epics,PB_epics);}
+function savePBItems(){sv(K.productBacklog,PB_items);}
+
+function pbiIsReady(item){
+  return item.points>0 && item.title && item.title.trim().length>2 && item.description && item.description.trim().length>5;
+}
+
+function addTheme(){
+  const name=prompt('Theme name:');
+  if(!name||!name.trim()) return;
+  const color=THEME_COLORS[PB_themes.length % THEME_COLORS.length];
+  PB_themes.push({id:crypto.randomUUID(),name:name.trim(),color,description:''});
+  savePBThemes();
+  renderProductBacklog();
+}
+
+function deleteTheme(id){
+  if(!confirm('Delete theme? Epics linked to it will become unlinked.')) return;
+  PB_themes=PB_themes.filter(t=>t.id!==id);
+  PB_epics=PB_epics.map(e=>e.themeId===id?{...e,themeId:''}:e);
+  savePBThemes();savePBEpics();
+  renderProductBacklog();
+}
+
+function addEpic(){
+  const name=prompt('Epic name:');
+  if(!name||!name.trim()) return;
+  const themeId=PB_themes.length===1?PB_themes[0].id:'';
+  const color=THEME_COLORS[(PB_epics.length+2) % THEME_COLORS.length];
+  PB_epics.push({id:crypto.randomUUID(),name:name.trim(),themeId,color,description:''});
+  savePBEpics();
+  renderProductBacklog();
+}
+
+function setEpicTheme(epicId,themeId){
+  const ep=PB_epics.find(e=>e.id===epicId);
+  if(ep){ep.themeId=themeId;savePBEpics();renderProductBacklog();}
+}
+
+function deleteEpic(id){
+  if(!confirm('Delete epic? Stories linked to it will become unlinked.')) return;
+  PB_epics=PB_epics.filter(e=>e.id!==id);
+  PB_items=PB_items.map(i=>i.epicId===id?{...i,epicId:''}:i);
+  savePBEpics();savePBItems();
+  renderProductBacklog();
+}
+
+function showAddBacklogItemForm(editId){
+  PB_editItemId=editId||null;
+  const form=document.getElementById('add-backlog-item-form');
+  const epicOpts=PB_epics.map(e=>`<option value="${e.id}">${san(e.name)}</option>`).join('');
+  document.getElementById('pbi-epic').innerHTML='<option value="">No Epic</option>'+epicOpts;
+  if(editId){
+    const item=PB_items.find(i=>i.id===editId);
+    if(item){
+      document.getElementById('pbi-title').value=item.title;
+      document.getElementById('pbi-points').value=item.points||'';
+      document.getElementById('pbi-description').value=item.description||'';
+      document.getElementById('pbi-acceptance').value=item.acceptanceCriteria||'';
+      document.getElementById('pbi-epic').value=item.epicId||'';
+      document.getElementById('pbi-priority').value=item.priority||'medium';
+    }
+  } else {
+    document.getElementById('pbi-title').value='';
+    document.getElementById('pbi-points').value='';
+    document.getElementById('pbi-description').value='';
+    document.getElementById('pbi-acceptance').value='';
+    document.getElementById('pbi-epic').value='';
+    document.getElementById('pbi-priority').value='medium';
+  }
+  form.style.display='block';
+  document.getElementById('pbi-title').focus();
+}
+
+function hideAddBacklogItemForm(){
+  document.getElementById('add-backlog-item-form').style.display='none';
+  PB_editItemId=null;
+}
+
+function saveBacklogItem(){
+  const title=document.getElementById('pbi-title').value.trim();
+  if(!title){alert('Title is required.');return;}
+  const item={
+    id:PB_editItemId||crypto.randomUUID(),
+    title,
+    points:parseInt(document.getElementById('pbi-points').value)||0,
+    description:document.getElementById('pbi-description').value.trim(),
+    acceptanceCriteria:document.getElementById('pbi-acceptance').value.trim(),
+    epicId:document.getElementById('pbi-epic').value,
+    priority:document.getElementById('pbi-priority').value,
+    sprintPulled:PB_editItemId?(PB_items.find(i=>i.id===PB_editItemId)||{}).sprintPulled||false:false
+  };
+  if(PB_editItemId){
+    PB_items=PB_items.map(i=>i.id===PB_editItemId?item:i);
+  } else {
+    PB_items.push(item);
+  }
+  savePBItems();
+  hideAddBacklogItemForm();
+  renderProductBacklog();
+}
+
+function deleteBacklogItem(id){
+  if(!confirm('Delete backlog item?')) return;
+  PB_items=PB_items.filter(i=>i.id!==id);
+  savePBItems();
+  renderProductBacklog();
+}
+
+function pullToSprint(itemId){
+  const item=PB_items.find(i=>i.id===itemId);
+  if(!item) return;
+  if(!pbiIsReady(item)){alert('Item must have points and a description before pulling to sprint.');return;}
+  // planningItems global is always an array; keep consistent with existing code
+  const alreadyIn=planningItems.some(p=>p.productBacklogItemId===itemId||p.id===itemId);
+  if(alreadyIn){alert('This item is already in the sprint backlog.');return;}
+  const sprintItem={
+    id:Date.now(),
+    productBacklogItemId:itemId,
+    title:item.title,
+    points:item.points,
+    assignee:'',
+    epicId:item.epicId,
+    subtasks:[],
+    completed:false
+  };
+  planningItems.push(sprintItem);
+  sv(K.planning,planningItems);
+  item.sprintPulled=true;
+  savePBItems();
+  renderProductBacklog();
+  alert('"'+item.title+'" added to Sprint Backlog. Go to Planning to assign it.');
+}
+
+function renderProductBacklog(){
+  PB_themes=ld(K.themes,[]);
+  PB_epics=ld(K.epics,[]);
+  PB_items=ld(K.productBacklog,[]);
+
+  // ---- THEMES ----
+  const themesList=document.getElementById('themes-list');
+  if(themesList){
+    if(!PB_themes.length){
+      themesList.innerHTML='<p class="empty-state">No themes yet. Themes group related Epics.</p>';
+    } else {
+      themesList.innerHTML=PB_themes.map(t=>{
+        const epicCount=PB_epics.filter(e=>e.themeId===t.id).length;
+        return `<div class="card mb-8" style="border-left:4px solid ${t.color};display:flex;align-items:center;justify-content:space-between;padding:10px 14px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <span style="width:14px;height:14px;border-radius:50%;background:${t.color};display:inline-block"></span>
+            <strong style="color:var(--text)">${san(t.name)}</strong>
+            <span class="text-muted" style="font-size:.82em">${epicCount} epic${epicCount===1?'':'s'}</span>
+          </div>
+          <button class="btn btn-sm btn-danger" onclick="deleteTheme('${t.id}')">Delete</button>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // ---- EPICS ----
+  const epicsList=document.getElementById('epics-list');
+  if(epicsList){
+    if(!PB_epics.length){
+      epicsList.innerHTML='<p class="empty-state">No epics yet. Epics are large bodies of work that contain multiple stories.</p>';
+    } else {
+      epicsList.innerHTML=PB_epics.map(ep=>{
+        const theme=PB_themes.find(t=>t.id===ep.themeId);
+        const epicItems=PB_items.filter(i=>i.epicId===ep.id);
+        const pulledItems=epicItems.filter(i=>i.sprintPulled);
+        const pct=epicItems.length?Math.round(pulledItems.length/epicItems.length*100):0;
+        const themeOpts=PB_themes.map(t=>`<option value="${t.id}" ${ep.themeId===t.id?'selected':''}>${san(t.name)}</option>`).join('');
+        return `<div class="card mb-8" style="border-left:4px solid ${ep.color};padding:12px 14px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="width:12px;height:12px;border-radius:3px;background:${ep.color};display:inline-block"></span>
+              <strong style="color:var(--text)">${san(ep.name)}</strong>
+              ${theme?`<span class="badge" style="background:${theme.color}22;color:${theme.color};font-size:.75em">${san(theme.name)}</span>`:''}
+            </div>
+            <div class="flex-gap">
+              <select class="input-sm" style="background:var(--input-bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:4px 8px;font-size:.82em" onchange="setEpicTheme('${ep.id}',this.value)">
+                <option value="">No Theme</option>${themeOpts}
+              </select>
+              <button class="btn btn-sm btn-danger" onclick="deleteEpic('${ep.id}')">Delete</button>
+            </div>
+          </div>
+          <div style="font-size:.82em;color:var(--text-muted);margin-bottom:6px">${epicItems.length} stor${epicItems.length===1?'y':'ies'} · ${pulledItems.length} in sprint</div>
+          <div class="progress-bar" style="height:6px"><div class="progress-fill" style="width:${pct}%;background:${ep.color}"></div></div>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // ---- FILTER EPIC DROPDOWN ----
+  const filterEl=document.getElementById('backlog-filter-epic');
+  if(filterEl){
+    const prev=filterEl.value;
+    filterEl.innerHTML='<option value="">All Epics</option>'+PB_epics.map(e=>`<option value="${e.id}" ${prev===e.id?'selected':''}>${san(e.name)}</option>`).join('');
+  }
+
+  // ---- EPIC SELECT IN FORM ----
+  const pbiEpicEl=document.getElementById('pbi-epic');
+  if(pbiEpicEl){
+    const prevEpic=pbiEpicEl.value;
+    pbiEpicEl.innerHTML='<option value="">No Epic</option>'+PB_epics.map(e=>`<option value="${e.id}" ${prevEpic===e.id?'selected':''}>${san(e.name)}</option>`).join('');
+  }
+
+  // ---- BACKLOG ITEMS ----
+  const listEl=document.getElementById('product-backlog-list');
+  if(!listEl) return;
+  const filterEpic=filterEl?filterEl.value:'';
+  const filtered=filterEpic?PB_items.filter(i=>i.epicId===filterEpic):PB_items;
+
+  if(!filtered.length){
+    listEl.innerHTML='<p class="empty-state">No backlog items yet. Add stories and link them to Epics.</p>';
+    return;
+  }
+
+  const priOrder={high:0,medium:1,low:2};
+  const sorted=[...filtered].sort((a,b)=>(priOrder[a.priority]||1)-(priOrder[b.priority]||1));
+
+  listEl.innerHTML=sorted.map(item=>{
+    const ready=pbiIsReady(item);
+    const epic=PB_epics.find(e=>e.id===item.epicId);
+    const priColor={high:'#ef4444',medium:'var(--primary)',low:'var(--text-muted)'}[item.priority]||'var(--text-muted)';
+    return `<div class="card mb-8" style="border-left:4px solid ${epic?epic.color:'var(--border)'};padding:12px 14px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px">
+            <strong style="color:var(--text)">${san(item.title)}</strong>
+            ${item.points?`<span class="badge badge-primary">${item.points} pts</span>`:'<span class="badge" style="background:#555;color:#aaa">No pts</span>'}
+            ${ready?'<span class="badge" style="background:#10b98122;color:#10b981">&#10003; Ready</span>':'<span class="badge" style="background:#f59e0b22;color:#f59e0b">Needs detail</span>'}
+            ${item.sprintPulled?'<span class="badge" style="background:var(--primary)22;color:var(--primary)">In Sprint</span>':''}
+            ${epic?`<span class="badge" style="background:${epic.color}22;color:${epic.color};font-size:.75em">${san(epic.name)}</span>`:''}
+            <span style="font-size:.78em;color:${priColor}">${item.priority||'medium'}</span>
+          </div>
+          ${item.description?`<div class="text-muted" style="font-size:.83em;margin-bottom:4px">${san(item.description)}</div>`:''}
+          ${item.acceptanceCriteria?`<div class="text-muted" style="font-size:.78em"><em>AC: ${san(item.acceptanceCriteria)}</em></div>`:''}
+        </div>
+        <div class="flex-gap" style="flex-shrink:0;flex-direction:column;align-items:flex-end">
+          ${!item.sprintPulled?`<button class="btn btn-sm btn-primary" onclick="pullToSprint('${item.id}')">&#8594; Sprint</button>`:'<span class="text-muted" style="font-size:.8em">In sprint</span>'}
+          <button class="btn btn-sm btn-outline" onclick="showAddBacklogItemForm('${item.id}')">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteBacklogItem('${item.id}')">Del</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ── PRIORITY BOARD ──
