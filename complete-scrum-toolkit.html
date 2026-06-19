@@ -332,6 +332,7 @@ textarea{resize:vertical;min-height:76px}
       <button class="tab-btn" data-tab="timer">⏱️ Timer</button>
       <button class="tab-btn" data-tab="reference">📖 Reference</button>
       <button class="tab-btn" data-tab="priority">⚡ Priority Board</button>
+      <button class="tab-btn" data-tab="library">📚 Sprint Library</button>
       <button class="tab-btn" data-tab="quiz">🧠 Quiz Me</button>
 
       <div style="margin-top:auto;padding-top:10px;border-top:1px solid rgba(255,255,255,.12)">
@@ -415,13 +416,20 @@ textarea{resize:vertical;min-height:76px}
           <button class="btn btn-sm btn-secondary mt-8" onclick="archiveCurrentSprint()">📦 Archive Sprint &amp; Start Next</button>
         </div>
 
-        <!-- SPRINT LIBRARY -->
-        <div class="section mt-16" style="border-top:2px solid var(--border);padding-top:20px">
+        <div class="section mt-16" style="border-top:2px solid var(--border);padding-top:16px">
+          <p class="text-muted" style="font-size:.88em">💡 Looking to save or load a sprint? Head to <button class="btn btn-sm btn-outline" onclick="switchTab('library')">📚 Sprint Library</button> in the sidebar.</p>
+        </div>
+      </div>
+
+      <!-- SPRINT LIBRARY -->
+      <div id="tab-library" class="tab-panel">
+        <h2>📚 Sprint Library</h2>
+        <div class="info-box">Save full sprint snapshots to JSON files on your device, or load a previous sprint to continue where you left off. Nothing is sent to any server.</div>
+        <div class="section">
           <div class="section-header">
-            <h3>💾 Sprint Library</h3>
-            <span class="text-muted" style="font-size:.8em">Save &amp; load full sprint snapshots</span>
+            <h3>💾 Save / Load Sprint File</h3>
           </div>
-          <p class="text-muted mb-12" style="font-size:.84em">Snapshots include sprint setup, backlog, daily entries, impediments, review, retrospective, and velocity. Saved as JSON files to your device — nothing is sent anywhere.</p>
+          <p class="text-muted mb-12" style="font-size:.88em">Snapshots include sprint setup, backlog, daily entries, impediments, review, retrospective, and velocity.</p>
           <div class="flex-gap mb-12" style="flex-wrap:wrap">
             <button class="btn btn-primary" onclick="saveSprint()">💾 Save to File</button>
             <label class="btn btn-outline" style="cursor:pointer">
@@ -438,11 +446,13 @@ textarea{resize:vertical;min-height:76px}
             </div>
             <p class="text-muted mt-8" style="font-size:.78em">⚠️ This will overwrite your current sprint, backlog, retro, and all other data.</p>
           </div>
-          <div class="section-header mt-12">
-            <h4 style="color:var(--secondary)">📁 Quick Saves (in-browser)</h4>
+        </div>
+        <div class="section">
+          <div class="section-header">
+            <h3>📁 Quick Saves (in-browser)</h3>
             <button class="btn btn-sm btn-outline" onclick="saveSprintSlot()">+ Quick Save</button>
           </div>
-          <p class="text-muted mb-8" style="font-size:.8em">Up to 5 slots — stored in this browser only. Good for switching between sprints on the same device.</p>
+          <p class="text-muted mb-8" style="font-size:.84em">Up to 5 slots — stored in this browser only. Good for switching between sprints on the same device.</p>
           <div id="sprint-slots-list"></div>
         </div>
       </div>
@@ -988,7 +998,8 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
 
 function onTab(t){
   if(t==='home'){renderDashboard();}
-  if(t==='hub'){drawBurndown();drawVelocity();renderSprintSlots();}
+  if(t==='hub'){drawBurndown();drawVelocity();}
+  if(t==='library'){renderSprintSlots();}
   if(t==='planning'){renderBacklogList();updateCapacityBar();updatePlanningTimebox();}
   if(t==='daily'){renderMembers();renderImpediments();}
   if(t==='review'){renderReviewItems();renderAttendees();updateReviewTimebox();}
